@@ -1,0 +1,45 @@
+seed: 0
+checkpoint_every: 10
+
+tags:
+  - mpii
+  - human36m
+group: prod
+
+dataset:
+  dirname: "/data/human36m/processed"
+  mpii: true
+
+train:
+  optimizer:
+    lr: 1.0e-3
+    weight_decay: 0
+  lr_scheduler:
+    patience: 10
+    cooldown: 5
+    mode: "min"
+    factor: 0.1
+    threshold: 1.0e-2
+    min_lr: 1.0e-6
+  batch_size: 200
+  epochs: 200
+
+model:
+  num_layers: 10
+  context_features: 10
+  hidden_features: 200
+  relations:
+      - x
+      - c
+      - r
+      - x->x
+      - x<-x
+      - c->x
+      - r->x
+
+embedding:
+    name: "sage"
+    config:
+      input_dim: 2
+      hidden_dim: 128
+      output_dim: 10
