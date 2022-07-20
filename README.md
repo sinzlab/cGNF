@@ -75,6 +75,14 @@ You can run the calibration check with the following command:
 docker-compose run eval --human36m --experiment=mpii-prod-xlarge --script=eval.human36m.calibration
 ```
 
+### Plots
+The code for plotting the results is available in the `/notebooks/` directory.
+You can run the notebook server with the following command:
+```
+docker-compose run notebook_server
+```
+which will start a jupyter notebook server at https://localhost:8888.
+
 ## Try it yourself
 We provide a demo of the model where you can provide your own input image and evaluate the model on it.
 You can run the demo with the following command:
