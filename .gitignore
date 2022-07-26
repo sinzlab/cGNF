@@ -104,6 +104,7 @@ celerybeat.pid
 # Environments
 .env
 .venv
+.env_pipeline
 env/
 venv/
 ENV/
@@ -127,3 +128,12 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# JetBrains
+/.idea/
+
+# Project Specific
+/sinzlab/
+
+/notebooks/scrapbooks/
+/data/

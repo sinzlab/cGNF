@@ -1,0 +1,88 @@
+version: '3.4'
+x-build: &build
+  context: .
+  dockerfile: Dockerfile
+
+x-shared: &common
+  build:
+    context: .
+    dockerfile: Dockerfile
+    args:
+      - GITHUB_USER=${GITHUB_USER}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - DEV_SOURCE=${DEV_SOURCE}
+  volumes:
+    - .:/src/propose
+    - ./notebooks:/notebooks
+    - ./tests:/tests
+  env_file:
+    - .env
+
+services:
+  base:
+    image: cgnf
+    <<: *common
+    volumes:
+      - .:/src/propose
+      - ./scripts:/scripts
+      - ./data:/data
+
+  python:
+    &python
+    image: cgnf
+    entrypoint: [ "python" ]
+
+  train:
+    image: cgnf
+    volumes:
+      - ./scripts:/scripts
+      - ./data:/data
+      - ./experiments:/experiments
+    env_file:
+      - .env
+    entrypoint: [ "python", "/scripts/train.py" ]
+
+  eval:
+    image: cgnf
+    volumes:
+      - ./scripts:/scripts
+      - ./data:/data
+      - ./experiments:/experiments
+    env_file:
+      - .env
+    entrypoint: [ "python", "/scripts/eval.py" ]
+
+  sweep:
+    image: cgnf
+    volumes:
+      - ./scripts:/scripts
+      - ./data:/data
+      - ./sweeps:/sweeps
+    env_file:
+      - .env
+    entrypoint: [ "python", "/scripts/sweep.py" ]
+
+  demo:
+    image: cgnf
+    <<: *common
+    volumes:
+      - ./scripts:/scripts
+      - ./data:/data
+    entrypoint: [ "python", "/scripts/demo.py" ]
+    ports:
+      - "7860:7860"
+
+  preprocess:
+    image: cgnf
+    volumes:
+      - ./scripts:/scripts
+      - ./data:/data
+    entrypoint: [ "python", "/scripts/preprocess.py" ]
+
+  notebook_server:
+    <<: *common
+    volumes:
+      - ./notebooks:/notebooks
+      - ./data:/data
+    ports:
+      - "8888:8888"

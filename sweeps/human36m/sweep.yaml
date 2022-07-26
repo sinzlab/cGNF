@@ -1,0 +1,20 @@
+name: "Architecture sweep"
+method: bayes
+
+metric:
+  goal: minimize
+  name: Loss
+
+parameters:
+  num_layers:
+    min: 5
+    max: 20
+  hidden_features:
+    min: 100
+    max: 1024
+  embedding_hidden_features:
+    min: 64
+    max: 1024
+  embedding_out_features:
+    min: 2
+    max: 100
