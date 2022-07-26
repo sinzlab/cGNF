@@ -29,6 +29,18 @@ docker pull sinzlab/pytorch:v3.9-torch1.9.0-cuda11.1-dj0.12.7
 3. Build the environment with `docker-compose build base`.
 4. Add the necessary data as described in the [Data section](#data).
 
+
+#### Usage without Docker
+In case you don't want to use Docker, you can install the dependencies after cloning the repository with the following command:
+```shell
+pip install -r requirements.txt
+```
+Note however that if you decide to not use Docker, you will not be able to use the `docker-compose` command and instead you will have to run scripts manually.
+For example:
+```shell
+python -m scripts/preprocess.py --human36m
+```
+
 ## Data
 ### Human3.6M dataset
 Due to license restrictions the dataset is not included in the repository.
@@ -88,7 +100,7 @@ which will start a jupyter notebook server at https://localhost:8888.
 We provide a demo of the model where you can provide your own input image and evaluate the model on it.
 You can run the demo with the following command:
 ```
-docker-compose run -p 7860:7860 d
+docker-compose run -p 7860:7860 demo
 ```
 Then you can open the demo in your browser at http://localhost:7860.
 

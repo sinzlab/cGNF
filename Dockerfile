@@ -36,10 +36,9 @@ RUN python -m pip install --no-cache-dir nflows\
 
 RUN pip install --upgrade pillow tqdm
 
-
-RUN pip install git+https://github.com/ppierzc/propose.git
+RUN pip install git+https://github.com/sinzlab/propose.git
 RUN pip install git+https://github.com/sinzlab/neuralpredictors.git
-RUN pip install torch-scatter -f https://data.pyg.org/whl/torch-1.9.0+cu111.html
+RUN pip install torch-scatter==2.0.9 -f https://data.pyg.org/whl/torch-1.9.0+cu111.html
 RUN pip install torch-sparse==0.6.12 -f https://data.pyg.org/whl/torch-1.9.0+cu111.html
 
 WORKDIR /

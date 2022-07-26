@@ -1,0 +1,21 @@
+nflows==0.14
+imageio==2.19.2
+tqdm==4.64.0
+torch-geometric==2.0.4
+ffmpeg-python==0.2.0
+scikit-image==0.19.3
+cdflib==0.4.4
+imageio-ffmpeg==0.4.7
+brax==0.0.13
+wandb==0.12.21
+gradio==3.1.1
+yacs==0.1.8
+neuralpredictors==0.3.0
+torch==1.9.0
+
+# Torch Geometric
+--find-links https://data.pyg.org/whl/torch-1.9.0+cu111.html
+torch-scatter==2.0.9
+torch-sparse==0.6.14
+
+ git+https://github.com/sinzlab/propose.git
