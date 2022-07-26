@@ -62,6 +62,16 @@ services:
       - .env
     entrypoint: [ "python", "/scripts/sweep.py" ]
 
+  demo:
+    image: cgnf
+    <<: *common
+    volumes:
+      - ./scripts:/scripts
+      - ./data:/data
+    entrypoint: [ "python", "/scripts/demo.py" ]
+    ports:
+      - "7860:7860"
+
   preprocess:
     image: cgnf
     volumes:

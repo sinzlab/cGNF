@@ -6,8 +6,9 @@ This is the official implementation of the paper "Conditional Graph Normalizing 
 > [**Conditional Graph Normalizing Flows**](),\
 > Pierzchlewicz, P. A., Cotton, R. J., Bashiri, M. & Sinz, F. H.
 
-### cGNF Model Implementation
-The Conditional Graph Normalizing Flows (cGNFs) is implemented as part of the [PROPOSE](https://github.com/sinzlab/propose/tree/0.1.0) framework for PRObabilistic POSe Estimation.
+### Model Source Code
+This repository hosts the experimental source code for the "Conditional Graph Normalizing Flows" paper.
+However, the Conditional Graph Normalizing Flow (cGNF) model is implemented as part of the [PROPOSE](https://github.com/sinzlab/propose/tree/0.1.0) framework for PRObabilistic POSe Estimation.
 You can find the full implementation of the model [here](https://github.com/sinzlab/propose/tree/0.1.0/propose/models/flows).
 
 ## Getting Started
@@ -87,7 +88,7 @@ which will start a jupyter notebook server at https://localhost:8888.
 We provide a demo of the model where you can provide your own input image and evaluate the model on it.
 You can run the demo with the following command:
 ```
-docker-compose run demo --human36m --experiment=mpii-prod-xlarge
+docker-compose run -p 7860:7860 d
 ```
 Then you can open the demo in your browser at http://localhost:7860.
 
