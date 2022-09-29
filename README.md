@@ -1,13 +1,13 @@
-# Conditional Graph Normalizing Flows
-This is the official implementation of the paper "Conditional Graph Normalizing Flows".
+# Multi-hypothesis 3D human pose estimation metrics favor miscalibrated distributions
+This is the official implementation of the paper "Multi-hypothesis 3D human pose estimation metrics favor miscalibrated distributions".
 
 <p align="center"><img src="figure/pipeline.png" width="100%" alt="Pipeline for Human Pose Estimation with Conditional Graph Normalizing Flows (cGNFs)" /></p>
 
-> [**Conditional Graph Normalizing Flows**](),\
+> [**Multi-hypothesis 3D human pose estimation metrics favor miscalibrated distributions**](),\
 > Pierzchlewicz, P. A., Cotton, R. J., Bashiri, M. & Sinz, F. H.
 
 ### Model Source Code
-This repository hosts the experimental source code for the "Conditional Graph Normalizing Flows" paper.
+This repository hosts the experimental source code for the "Multi-hypothesis 3D human pose estimation metrics favor miscalibrated distributions" paper.
 However, the Conditional Graph Normalizing Flow (cGNF) model is implemented as part of the [PROPOSE](https://github.com/sinzlab/propose/tree/0.1.0) framework for PRObabilistic POSe Estimation.
 You can find the full implementation of the model [here](https://github.com/sinzlab/propose/tree/0.1.0/propose/models/flows).
 
@@ -63,11 +63,12 @@ flow = CondGraphFlow.from_pretrained("ppierzc/cgnf/cgnf_human36m-xlarge:best")
 ```
 Table of available models:
 
-| Model Name                  | description                                                                    | Artifact path                                | Weights |
-|-----------------------------|--------------------------------------------------------------------------------|----------------------------------------------| ------- |
-| Extra Large cGNF Human 3.6m | Extra large model trained on the Human 3.6M dataset with MPII input keypoints. | ```ppierzc/cgnf/cgnf_human36m-xlarge:best``` | [link](https://wandb.ai/ppierzc/propose_human36m/artifacts/model/mpii-prod-xlarge/v20/files) |
-| Large cGNF Human 3.6m       | Large model trained on the Human 3.6M dataset with MPII input keypoints.       | ```ppierzc/cgnf/cgnf_human36m-large:best```  | [link](https://wandb.ai/ppierzc/propose_human36m/artifacts/model/mpii-prod-large/v20/files) |
-| cGNF Human 3.6m             | Model trained on the Human 3.6M dataset with MPII input keypoints.             | ```ppierzc/cgnf/cgnf_human36m:best```        | [link](https://wandb.ai/ppierzc/propose_human36m/artifacts/model/mpii-prod/v20/files) |
+| Model Name                      | description                                                                               | minMPJPE | ECE  | Artifact path                               | Weights                                                                                       |
+|---------------------------------|-------------------------------------------------------------------------------------------|----------|------|---------------------------------------------|-----------------------------------------------------------------------------------------------|
+| Extra Large cGNF Human 3.6m     | Extra large model trained on the Human 3.6M dataset with MPII input keypoints.            | 48.6 mm  | 0.20 | ```ppierzc/cgnf/cgnf_human36m-xlarge:best``` | [link](https://wandb.ai/ppierzc/propose_human36m/artifacts/model/mpii-prod-xlarge/v20/files)  |
+| Large cGNF Human 3.6m           | Large model trained on the Human 3.6M dataset with MPII input keypoints.                  | 49.6 mm  | 0.12 | ```ppierzc/cgnf/cgnf_human36m-large:best``` | [link](https://wandb.ai/ppierzc/propose_human36m/artifacts/model/mpii-prod-large/v20/files)   |
+| cGNF Human 3.6m                 | Model trained on the Human 3.6M dataset with MPII input keypoints.                        | 52.0 mm  | 0.06 |```ppierzc/cgnf/cgnf_human36m:best```        | [link](https://wandb.ai/ppierzc/propose_human36m/artifacts/model/mpii-prod/v20/files)         |
+| cGNF Human 3.6m w/o sample loss | Model trained on the Human 3.6M dataset with MPII input keypoints without the sample loss | 58.7 mm  | 0.05 |```ppierzc/cgnf/cgnf_human36m:best```        | [link](https://wandb.ai/ppierzc/propose_human36m/artifacts/model/mpii-prod-no-mode/v20/files) |
 
 
 ### Training
@@ -109,7 +110,7 @@ If you use our work in your research, please cite our paper:
 ```
 @article{
   pierzchlewicz_2022,
-  title = {Conditional Graph Normalizing Flow},
+  title = {Multi-hypothesis 3D human pose estimation metrics favor miscalibrated distributions},
   author = {Pierzchlewicz, Paweł A., Cotton, James, Bashiri, Mohammad, Sinz, Fabian},
   journal = {arXiv},
   year = {2022},
