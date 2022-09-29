@@ -63,12 +63,12 @@ flow = CondGraphFlow.from_pretrained("ppierzc/cgnf/cgnf_human36m-xlarge:best")
 ```
 Table of available models:
 
-| Model Name                      | description                                                                               | minMPJPE | ECE  | Artifact path                               | Weights                                                                                       |
-|---------------------------------|-------------------------------------------------------------------------------------------|----------|------|---------------------------------------------|-----------------------------------------------------------------------------------------------|
-| Extra Large cGNF Human 3.6m     | Extra large model trained on the Human 3.6M dataset with MPII input keypoints.            | 48.6 mm  | 0.20 | ```ppierzc/cgnf/cgnf_human36m-xlarge:best``` | [link](https://wandb.ai/ppierzc/propose_human36m/artifacts/model/mpii-prod-xlarge/v20/files)  |
-| Large cGNF Human 3.6m           | Large model trained on the Human 3.6M dataset with MPII input keypoints.                  | 49.6 mm  | 0.12 | ```ppierzc/cgnf/cgnf_human36m-large:best``` | [link](https://wandb.ai/ppierzc/propose_human36m/artifacts/model/mpii-prod-large/v20/files)   |
-| cGNF Human 3.6m                 | Model trained on the Human 3.6M dataset with MPII input keypoints.                        | 52.0 mm  | 0.06 |```ppierzc/cgnf/cgnf_human36m:best```        | [link](https://wandb.ai/ppierzc/propose_human36m/artifacts/model/mpii-prod/v20/files)         |
-| cGNF Human 3.6m w/o sample loss | Model trained on the Human 3.6M dataset with MPII input keypoints without the sample loss | 58.7 mm  | 0.05 |```ppierzc/cgnf/cgnf_human36m:best```        | [link](https://wandb.ai/ppierzc/propose_human36m/artifacts/model/mpii-prod-no-mode/v20/files) |
+| Model Name                      | description                                                                               | minMPJPE | ECE  | Artifact path                                 | Weights                                                                                       |
+|---------------------------------|-------------------------------------------------------------------------------------------|----------|------|-----------------------------------------------|-----------------------------------------------------------------------------------------------|
+| Extra Large cGNF Human 3.6m     | Extra large model trained on the Human 3.6M dataset with MPII input keypoints.            | 48.6 mm  | 0.20 | ```ppierzc/cgnf/cgnf_human36m-xlarge:best```  | [link](https://wandb.ai/ppierzc/propose_human36m/artifacts/model/mpii-prod-xlarge/v20/files)  |
+| Large cGNF Human 3.6m           | Large model trained on the Human 3.6M dataset with MPII input keypoints.                  | 49.6 mm  | 0.12 | ```ppierzc/cgnf/cgnf_human36m-large:best```   | [link](https://wandb.ai/ppierzc/propose_human36m/artifacts/model/mpii-prod-large/v20/files)   |
+| cGNF Human 3.6m                 | Model trained on the Human 3.6M dataset with MPII input keypoints.                        | 52.0 mm  | 0.06 | ```ppierzc/cgnf/cgnf_human36m:best```         | [link](https://wandb.ai/ppierzc/propose_human36m/artifacts/model/mpii-prod/v20/files)         |
+| cGNF Human 3.6m w/o sample loss | Model trained on the Human 3.6M dataset with MPII input keypoints without the sample loss | 58.7 mm  | 0.05 | ```ppierzc/cgnf/cgnf_human36m-no-mode:best``` | [link](https://wandb.ai/ppierzc/propose_human36m/artifacts/model/mpii-prod-no-mode/v20/files) |
 
 
 ### Training
