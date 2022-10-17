@@ -89,6 +89,15 @@ You can run the calibration check with the following command:
 docker-compose run eval --human36m --experiment=mpii-prod-xlarge --script=eval.human36m.calibration
 ```
 
+#### Evaluation of external models
+For some of the experiments we used models from other authors. In order to reproduce these results we provide the necessary scripts under `scripts/external`.
+The list to with links to our scripts sorted by external models is given below:
+- [SimpleBaseline](/scripts/external/SimpleBaseline)
+- [Wehrbein et al.](/scripts/external/WehrbeinEtAl)
+- [Sharma et al.](/scripts/external/SharmaEtAl)
+
+Follow the associated README files for more information.
+
 ### Plots
 The code for plotting the results is available in the `/notebooks/` directory.
 You can run the notebook server with the following command:
@@ -109,7 +118,7 @@ Then you can open the demo in your browser at http://localhost:7860.
 If you use our work in your research, please cite our paper:
 ```
 @article{
-  pierzchlewicz_2022,
+  pierzchlewicz2022,
   title = {Multi-hypothesis 3D human pose estimation metrics favor miscalibrated distributions},
   author = {Pierzchlewicz, Paweł A., Cotton, James, Bashiri, Mohammad, Sinz, Fabian},
   journal = {arXiv},
