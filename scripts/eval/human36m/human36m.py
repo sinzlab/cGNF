@@ -189,7 +189,8 @@ def run(use_wandb: bool = False, config: dict = None):
 
         true_pose = (
             batch["x"]
-            .x.numpy().cpu()
+            .x.numpy()
+            .cpu()
             .reshape(-1, 16, 1, 3)[:, np.insert(hard_dataset.occlusions[i], 9, False)]
         )
         sample_poses = (
