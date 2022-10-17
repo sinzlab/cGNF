@@ -15,7 +15,7 @@ class IsoGaussianModel(nn.Module):
 
         self.size = size
 
-    def sample(self, mean, n_samples=(200, )):
+    def sample(self, mean, n_samples=(200,)):
         """
         "Sample from a Gaussian distribution with mean and standard deviation given by the input parameters."
 
@@ -27,7 +27,7 @@ class IsoGaussianModel(nn.Module):
 
         return mean.unsqueeze(1) + z * self.sigma
 
-    def forward(self, mean, target, n_samples=(200, )):
+    def forward(self, mean, target, n_samples=(200,)):
         """
         It takes the mean of the distribution, the target value, and the number of samples to draw from the distribution
         It then draws samples from the distribution, and returns the squared error between the target and the closest
@@ -41,7 +41,9 @@ class IsoGaussianModel(nn.Module):
         samples = self.sample(mean, n_samples)
         samples = samples.view(*n_samples, -1, 3)
 
-        return torch.pow(target.unsqueeze(1) - samples, 2).sum(-1).mean(-1).min(1).values
+        return (
+            torch.pow(target.unsqueeze(1) - samples, 2).sum(-1).mean(-1).min(1).values
+        )
 
     def log_prob(self, mean, target):
         """

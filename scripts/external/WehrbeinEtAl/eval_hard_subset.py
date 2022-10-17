@@ -3,9 +3,13 @@ import numpy as np
 
 import models.model as model
 import config as c
-from utils.eval_functions import (compute_CP_list, pa_hypo_batch,
-                                  err_3dpe_parallel, compute_3DPCK)
-from utils.data_utils import (reinsert_root_joint_torch, root_center_poses)
+from utils.eval_functions import (
+    compute_CP_list,
+    pa_hypo_batch,
+    err_3dpe_parallel,
+    compute_3DPCK,
+)
+from utils.data_utils import reinsert_root_joint_torch, root_center_poses
 import data.data_h36m
 from sklearn.metrics import auc
 
@@ -18,7 +22,7 @@ inn.to(c.device)
 inn.load(c.load_model_name, c.device)
 inn.eval()
 
-print(f'{sum(p.numel() for p in inn.parameters()):,}')
+print(f"{sum(p.numel() for p in inn.parameters()):,}")
 
 c.batch_size = 512
 
@@ -30,13 +34,19 @@ cps_max_th = 300
 cps_step = 1
 cps_length = int((cps_max_th + 1 - cps_min_th) / cps_step)
 
-f = open(c.result_dir + "HardSubset_eval_" + c.m_name + ".txt", 'w')
-f.write("Evaluated with %d different hypotheses and standard dev of %.2f.\n\n\n" %
-        (n_hypo, std_dev))
+f = open(c.result_dir + "HardSubset_eval_" + c.m_name + ".txt", "w")
+f.write(
+    "Evaluated with %d different hypotheses and standard dev of %.2f.\n\n\n"
+    % (n_hypo, std_dev)
+)
 
-test_dataset = data.data_h36m.H36MDataset(c.test_file, quick_eval=False, train_set=False, hardsubset=True)
+test_dataset = data.data_h36m.H36MDataset(
+    c.test_file, quick_eval=False, train_set=False, hardsubset=True
+)
 
-loader = torch.utils.data.DataLoader(test_dataset, batch_size=c.batch_size, shuffle=True, drop_last=False)
+loader = torch.utils.data.DataLoader(
+    test_dataset, batch_size=c.batch_size, shuffle=True, drop_last=False
+)
 
 n_poses = len(test_dataset)
 
@@ -59,9 +69,9 @@ hypo_stddev = torch.zeros((3, 17))
 
 
 for batch_idx, sample in enumerate(loader):
-    x = sample['poses_3d']
-    y_gt = sample['p2d_hrnet']
-    cond = sample['gauss_fits']
+    x = sample["poses_3d"]
+    y_gt = sample["p2d_hrnet"]
+    cond = sample["gauss_fits"]
     bs = x.shape[0]
 
     # 2D to 3D mapping (reverse path)
@@ -72,11 +82,18 @@ for batch_idx, sample in enumerate(loader):
 
     poses_3d_z0 = reinsert_root_joint_torch(poses_3d_z0)
     poses_3d_z0 = root_center_poses(poses_3d_z0) * 1000
-    x_gt = sample['p3d_gt']
+    x_gt = sample["p3d_gt"]
 
-    total_err_z0_p1 += torch.sum(torch.mean(torch.sqrt(torch.sum((x_gt.view(bs, 3, 17)
-                                                                  - poses_3d_z0.view(bs, 3, 17)) ** 2,
-                                                                 dim=1)), dim=1)).item()
+    total_err_z0_p1 += torch.sum(
+        torch.mean(
+            torch.sqrt(
+                torch.sum(
+                    (x_gt.view(bs, 3, 17) - poses_3d_z0.view(bs, 3, 17)) ** 2, dim=1
+                )
+            ),
+            dim=1,
+        )
+    ).item()
 
     x_cpu = x_gt.cpu()
     poses_3d_z0 = poses_3d_z0.cpu()
@@ -100,8 +117,9 @@ for batch_idx, sample in enumerate(loader):
 
     hypo_stddev += torch.sum(torch.std(poses_3d_pred, dim=0), dim=0).cpu()
 
-    errors_proto1 = torch.mean(torch.sqrt(torch.sum((x_gt.view(bs, 3, 17)
-                                                     - poses_3d_pred) ** 2, dim=2)), dim=2)
+    errors_proto1 = torch.mean(
+        torch.sqrt(torch.sum((x_gt.view(bs, 3, 17) - poses_3d_pred) ** 2, dim=2)), dim=2
+    )
 
     errors_pck_p1 = compute_3DPCK(x_gt.view(bs, 3, 17), poses_3d_pred)
 
@@ -110,12 +128,20 @@ for batch_idx, sample in enumerate(loader):
     x_gt = x_gt.cpu()
     x_gt = x_gt.repeat(n_hypo, 1)
 
-    errors_proto2 = err_3dpe_parallel(x_gt, poses_3d_pred.clone(), return_sum=False).view(-1, bs)
+    errors_proto2 = err_3dpe_parallel(
+        x_gt, poses_3d_pred.clone(), return_sum=False
+    ).view(-1, bs)
     poses_3d_pa = pa_hypo_batch(x_gt, poses_3d_pred.clone())
     poses_3d_pa = poses_3d_pa.view(n_hypo, bs, 3, 17)
     x_gt = x_gt.view(n_hypo, bs, 3, 17)[0, :]
 
-    errors_auc_cps_p2 = compute_CP_list(x_gt.view(bs, 3, 17), poses_3d_pa, min_th=cps_min_th, max_th=cps_max_th, step=cps_step)
+    errors_auc_cps_p2 = compute_CP_list(
+        x_gt.view(bs, 3, 17),
+        poses_3d_pa,
+        min_th=cps_min_th,
+        max_th=cps_max_th,
+        step=cps_step,
+    )
     # errors_auc_cps_p2 = compute_CP_list(x_gt.view(bs, 3, 17).cuda(), poses_3d_pa.cuda(), min_th=cps_min_th, max_th=cps_max_th, step=cps_step)
 
     print("Evaluated on batch %d" % (batch_idx + 1))
@@ -199,11 +225,21 @@ print("\nstd dev per joint and dim in mm:")
 f.write("\n\n")
 f.write("std dev per joint and dim in mm:\n")
 for i in range(std_dev_in_mm.shape[1]):
-    print("joint %d: std_x=%.2f, std_y=%.2f, std_z=%.2f" % (i, std_dev_in_mm[0, i], std_dev_in_mm[1, i],
-                                                            std_dev_in_mm[2, i]))
-    f.write("joint %d: std_x=%.2f, std_y=%.2f, std_z=%.2f\n" % (i, std_dev_in_mm[0, i], std_dev_in_mm[1, i],
-                                                                std_dev_in_mm[2, i]))
+    print(
+        "joint %d: std_x=%.2f, std_y=%.2f, std_z=%.2f"
+        % (i, std_dev_in_mm[0, i], std_dev_in_mm[1, i], std_dev_in_mm[2, i])
+    )
+    f.write(
+        "joint %d: std_x=%.2f, std_y=%.2f, std_z=%.2f\n"
+        % (i, std_dev_in_mm[0, i], std_dev_in_mm[1, i], std_dev_in_mm[2, i])
+    )
 
 std_dev_means = torch.mean(std_dev_in_mm, dim=1)
-print("mean: std_x=%.2f, std_y=%.2f, std_z=%.2f" % (std_dev_means[0], std_dev_means[1], std_dev_means[2]))
-f.write("mean: std_x=%.2f, std_y=%.2f, std_z=%.2f\n" % (std_dev_means[0], std_dev_means[1], std_dev_means[2]))
+print(
+    "mean: std_x=%.2f, std_y=%.2f, std_z=%.2f"
+    % (std_dev_means[0], std_dev_means[1], std_dev_means[2])
+)
+f.write(
+    "mean: std_x=%.2f, std_y=%.2f, std_z=%.2f\n"
+    % (std_dev_means[0], std_dev_means[1], std_dev_means[2])
+)
