@@ -1,0 +1,8 @@
+name: "Seed Sweep"
+method: grid
+
+parameters:
+  seed:
+    min: 1
+    max: 5
+    step: 1

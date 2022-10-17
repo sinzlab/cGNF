@@ -1,19 +1,16 @@
-from propose.datasets.human36m.Human36mDataset import Human36mDataset
-from torch_geometric.loader import DataLoader
-
-from propose.utils.reproducibility import set_random_seed
-from propose.evaluation.mpjpe import mpjpe, pa_mpjpe
-from propose.evaluation.pck import pck, human36m_joints_to_use
-
-from propose.models.flows import CondGraphFlow
-
 import os
-
 import time
-from tqdm import tqdm
-import numpy as np
 
+import numpy as np
 import wandb
+from torch_geometric.loader import DataLoader
+from tqdm import tqdm
+
+from propose.datasets.human36m.Human36mDataset import Human36mDataset
+from propose.evaluation.mpjpe import mpjpe, pa_mpjpe
+from propose.evaluation.pck import human36m_joints_to_use, pck
+from propose.models.flows import CondGraphFlow
+from propose.utils.reproducibility import set_random_seed
 
 
 def evaluate(flow, test_dataloader, temperature=1.0):

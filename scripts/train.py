@@ -1,18 +1,19 @@
-from pathlib import Path
-from propose.datasets.human36m.preprocess import pickle_poses, pickle_cameras
-
 import argparse
-
-from train.human36m import human36m
-
 import os
+import time
+from pathlib import Path
+
+import torch
+import wandb
 import yaml
 
-from pathlib import Path
-
-import wandb
-import torch
-import time
+from propose.datasets.human36m.preprocess import pickle_cameras, pickle_poses
+from propose.utils.reproducibility import (
+    check_uncommitted_changes,
+    get_commit_hash,
+    get_package_version,
+)
+from train.human36m import human36m
 
 parser = argparse.ArgumentParser(description="Arguments for running the scripts")
 
@@ -80,6 +81,12 @@ if __name__ == "__main__":
     if args.human36m:
         if "cuda_accelerated" not in config:
             config["cuda_accelerated"] = torch.cuda.is_available()
+
+        config["env"] = {
+            "cgnf_version": get_commit_hash(),
+            "uncommitted_changes": check_uncommitted_changes(),
+            "propose_version": get_package_version("propose"),
+        }
 
         if args.wandb:
             wandb.init(

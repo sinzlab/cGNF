@@ -1,12 +1,15 @@
-from propose.utils.imports import dynamic_import
-
 import argparse
-
 import os
-import yaml
-
 from pathlib import Path
 
+import yaml
+
+from propose.utils.imports import dynamic_import
+from propose.utils.reproducibility import (
+    check_uncommitted_changes,
+    get_commit_hash,
+    get_package_version,
+)
 
 parser = argparse.ArgumentParser(description="Arguments for running the scripts")
 
@@ -63,6 +66,14 @@ if __name__ == "__main__":
 
         if "experiment_name" not in config:
             config["experiment_name"] = args.experiment
+
+    config["env"] = {
+        "cgnf_version": get_commit_hash(),
+        "uncommitted_changes": check_uncommitted_changes(),
+        "propose_version": get_package_version("propose"),
+    }
+
+    print(config)
 
     if args.human36m:
         dynamic_import(args.script, "run")(use_wandb=args.wandb, config=config)

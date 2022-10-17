@@ -1,95 +1,45 @@
-from propose.models.detectors import HRNet
-from propose.models.flows import CondGraphFlow
-
-from propose.poses.human36m import MPIIPose, Human36mPose
-
-import numpy as np
-
 import gradio as gr
-
-import torch
-
 import matplotlib.pyplot as plt
-
+import numpy as np
+import torch
 from neuralpredictors.data.transforms import rescale
 from torchvision.transforms import Pad
 
+from propose.models.detectors import HRNet
+from propose.models.flows import CondGraphFlow
+from propose.poses.human36m import Human36mPose, MPIIPose
 
 # Get models
 flow = CondGraphFlow.from_pretrained("ppierzc/propose_human36m/mpii-prod-xlarge:v20")
-model = HRNet.from_pretrained("ppierzc/cgnf/hrnet:v0")
+# model = HRNet.from_pretrained("ppierzc/cgnf/hrnet:v0")
+from propose.models.detectors.hrnet.config import config
+
+config_file = "../data/models/w32_256x256_adam_lr1e-3.yaml"
+
+config.defrost()
+config.merge_from_file(config_file)
+config.freeze()
+
+model = HRNet(config)
+
+from collections import OrderedDict
+
+state_dict = torch.load(
+    "../data/models" + "/fine_HRNet.pt",
+    map_location=torch.device("cpu"),
+)["net"]
+
+new_state_dict = OrderedDict()
+for k, v in state_dict.items():
+    name = k  # remove module.
+    new_state_dict[name] = v
+
+model.load_state_dict(new_state_dict, strict=False)
 yolo = torch.hub.load("ultralytics/yolov5", "yolov5s", pretrained=True)
 
 flow.eval()
 model.eval()
 yolo.eval()
-
-
-def crop_image_to_human(input_image):
-    detections = yolo(input_image)
-    detections = (
-        detections.pandas()
-        .xyxy[0][detections.pandas().xyxy[0].name == "person"]
-        .reset_index()
-    )
-    bbox = detections.iloc[0]
-
-    xy = (bbox["xmin"], bbox["ymax"])
-    width = bbox["xmax"] - bbox["xmin"]
-    height = bbox["ymax"] - bbox["ymin"]
-
-    center = (xy[0] + width / 2, xy[1] - height / 2)
-
-    side = max([width, height])
-    # side = min([longer, input_image.shape[0], input_image.shape[1]])
-
-    crop_size = [
-        int(center[0] - side / 2),
-        int(center[0] + side / 2),
-        int(center[1] - side / 2),
-        int(center[1] + side / 2),
-    ]
-    for i in range(4):
-        crop_size[i] = max([crop_size[i], 0])
-
-    cropped_image = input_image[
-        crop_size[2] : crop_size[3], crop_size[0] : crop_size[1]
-    ]
-
-    padder = Pad(
-        (
-            int((max(cropped_image.shape) - cropped_image.shape[0]) / 2),
-            int((max(cropped_image.shape) - cropped_image.shape[1]) / 2),
-        )
-    )
-    cropped_image = padder(torch.Tensor(cropped_image)).numpy()
-    cropped_image = cropped_image / 255
-
-    cropped_image = rescale(
-        cropped_image, 256 / cropped_image.shape[0], multichannel=True
-    )
-    cropped_image = cropped_image[:256, :256]
-    padder = Pad(
-        (
-            256 - cropped_image.shape[0],
-            256 - cropped_image.shape[1],
-        )
-    )
-
-    cropped_image = padder(torch.Tensor(cropped_image)).numpy()
-    cropped_image = cropped_image[:256, :256]
-
-    return cropped_image
-
-
-def process_coords(coords, vals):
-    pose_2d = MPIIPose(coords * 0.0139 * 0.8)
-    pose_2d.occluded_markers = get_occlusion_vector(vals)
-    pose_2d = pose_2d.to_human36m()
-    pose_2d.pose_matrix = pose_2d.pose_matrix - pose_2d.pose_matrix[:, 0]
-    pose_2d.pose_matrix[..., 1] = -pose_2d.pose_matrix[..., 1]
-
-    return pose_2d
 
 
 def process_samples(samples):
@@ -98,28 +48,17 @@ def process_samples(samples):
     return samples.swapaxes(0, 1)
 
 
-def get_occlusion_vector(vals, threshold=0.3):
-    return vals < threshold
-
-
 def d2_pose_estimation(input_image):
-    cropped_image = crop_image_to_human(input_image)
-
-    pred_image = torch.Tensor(cropped_image)
-    pred_image = pred_image.view(1, *pred_image.shape)
-    pred_image = pred_image.permute(0, 3, 1, 2)
-
     with torch.no_grad():
+        pred_image = model.preprocess(input_image[np.newaxis])
         coords, vals = model.pose_estimate(pred_image)
+        pose_2d = MPIIPose(coords)
+        pose_2d.occluded_markers = vals < 0.3
+        pose_2d = pose_2d.to_human36m()
 
-    pose_2d = process_coords(coords, vals)
-
-    pose_3d = Human36mPose(np.zeros((1, 17, 3)))
-
-    context_graph = pose_3d.conditional_graph(pose_2d)
-
-    samples = flow.sample(100, context=context_graph)["x"]["x"]
-    samples = process_samples(samples)
+        context_graph = flow.preprocess(pose_2d)
+        samples = flow.sample(100, context=context_graph)["x"]["x"]
+        samples = process_samples(samples)
 
     mode_sample = np.median(samples, axis=0)
 
