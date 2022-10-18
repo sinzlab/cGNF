@@ -41,6 +41,13 @@ parser.add_argument(
     help="Experiment script",
 )
 
+parser.add_argument(
+    "--seed",
+    default=0,
+    type=int,
+    help="Random seed",
+)
+
 if __name__ == "__main__":
     args = parser.parse_args()
 
@@ -73,11 +80,26 @@ if __name__ == "__main__":
         "propose_version": get_package_version("propose"),
     }
 
-    print(config)
+    seed = args.seed
 
+    config["seed"] = args.seed
+
+    print("Running with seed", seed)
     if args.human36m:
         dynamic_import(args.script, "run")(use_wandb=args.wandb, config=config)
     else:
         print(
             "Not running any scripts as no arguments were passed. Run with --help for more information."
         )
+
+
+# 0.0808, 0.0291
+# 0.0807, 0.0280
+# 0.0807, 0.0284
+
+# 53.0131
+# 53.0144
+
+# 0.0825, 0.0661
+# 0.0823, 0.0657
+# 0.0821, 0.0654

@@ -143,7 +143,7 @@ def run(use_wandb: bool = False, config: dict = None):
         )
 
     flow = CondGraphFlow.from_pretrained(
-        f'ppierzc/propose_human36m/{config["experiment_name"]}:latest'
+        f'ppierzc/propose_human36m/{config["experiment_name"]}:best'
     )
 
     config["cuda_accelerated"] = flow.set_device()
@@ -189,8 +189,8 @@ def run(use_wandb: bool = False, config: dict = None):
 
         true_pose = (
             batch["x"]
-            .x.numpy()
-            .cpu()
+            .x.cpu()
+            .numpy()
             .reshape(-1, 16, 1, 3)[:, np.insert(hard_dataset.occlusions[i], 9, False)]
         )
         sample_poses = (

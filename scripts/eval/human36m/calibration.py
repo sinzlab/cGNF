@@ -20,7 +20,6 @@ from propose.utils.reproducibility import (
 
 
 def calibration(flow, test_dataloader, occluded=True):
-    print("occluded")
     total = 0
     pbar = tqdm(range(len(test_dataloader)))
 
@@ -83,6 +82,9 @@ def calibration(flow, test_dataloader, occluded=True):
     quantile_freqs = quantile_counts / total
 
     calibration_score = np.abs(np.median(quantile_freqs, axis=1) - quantiles).mean()
+
+    # if not occluded:
+    #     calibration_score = np.median(calibration_score, axis=1)
     # calibration_score = np.median(quantile_freqs, axis=1).sum() * 0.05
 
     print(f"{'Occluded ' if occluded else ''}Calibration score: {calibration_score}")
@@ -105,7 +107,8 @@ def calibration_experiment(flow, config, occluded=True, **kwargs):
 def run(use_wandb, config):
     set_random_seed(config["seed"])
 
-    config["dataset"]["dirname"] = config["dataset"]["dirname"] + "/test"
+    if "test" not in config["dataset"]["dirname"]:
+        config["dataset"]["dirname"] = config["dataset"]["dirname"] + "/test"
 
     if use_wandb:
         wandb.init(
@@ -119,7 +122,7 @@ def run(use_wandb, config):
         )
 
     flow = CondGraphFlow.from_pretrained(
-        f'ppierzc/propose_human36m/{config["experiment_name"]}:latest'
+        f'ppierzc/propose_human36m/{config["experiment_name"]}:best'
     )
 
     config["cuda_accelerated"] = flow.set_device()
@@ -135,33 +138,36 @@ def run(use_wandb, config):
         occluded=False,
     )
 
-    print(quantile_freqs)
+    print(np.median(quantile_freqs, axis=1))
 
-    wandb.log(
-        {
-            "calibration_score": calibration_score,
-            "quantiles": quantiles,
-            "quantile_freqs": quantile_freqs,
-        }
-    )
+    if use_wandb:
+        wandb.log(
+            {
+                "calibration_score": calibration_score,
+                "quantiles": quantiles,
+                "quantile_freqs": quantile_freqs,
+            }
+        )
 
     quantiles, quantile_freqs, q_val, calibration_score = calibration_experiment(
         flow,
         config,
         occlusion_fractions=[],
-        test=True,
-        occluded=False,
+        hardsubset=True,
+        # test=True,
+        occluded=True,
     )
 
     print(quantile_freqs)
 
-    wandb.log(
-        {
-            "calibration_score": calibration_score,
-            "quantiles": quantiles,
-            "quantile_freqs": quantile_freqs,
-        }
-    )
+    if use_wandb:
+        wandb.log(
+            {
+                "calibration_score": calibration_score,
+                "quantiles": quantiles,
+                "quantile_freqs": quantile_freqs,
+            }
+        )
 
     sns.set_context("talk")
     with sns.axes_style("whitegrid"):
