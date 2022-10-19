@@ -30,7 +30,7 @@ docker pull sinzlab/pytorch:v3.9-torch1.9.0-cuda11.1-dj0.12.7
 4. Add the necessary data as described in the [Data section](#data).
 
 
-#### Usage without Docker
+#### Usage without Docker (not recommended)
 In case you don't want to use Docker, you can install the dependencies after cloning the repository with the following command:
 ```shell
 pip install -r requirements.txt
@@ -59,34 +59,34 @@ We provide pretrained model weights which you can either download with the provi
 ```python
 from propose.models.flows import CondGraphFlow
 
-flow = CondGraphFlow.from_pretrained("ppierzc/cgnf/cgnf_human36m-xlarge:best")
+flow = CondGraphFlow.from_pretrained("ppierzc/propose_human36m/mpii-prod:best")
 ```
 Table of available models:
 
-| Model Name                      | description                                                                               | minMPJPE | ECE  | Artifact path                                 | Weights                                                                                       |
-|---------------------------------|-------------------------------------------------------------------------------------------|----------|------|-----------------------------------------------|-----------------------------------------------------------------------------------------------|
-| Extra Large cGNF Human 3.6m     | Extra large model trained on the Human 3.6M dataset with MPII input keypoints.            | 48.6 mm  | 0.20 | ```ppierzc/cgnf/cgnf_human36m-xlarge:best```  | [link](https://wandb.ai/ppierzc/propose_human36m/artifacts/model/mpii-prod-xlarge/v20/files)  |
-| Large cGNF Human 3.6m           | Large model trained on the Human 3.6M dataset with MPII input keypoints.                  | 49.6 mm  | 0.12 | ```ppierzc/cgnf/cgnf_human36m-large:best```   | [link](https://wandb.ai/ppierzc/propose_human36m/artifacts/model/mpii-prod-large/v20/files)   |
-| cGNF Human 3.6m                 | Model trained on the Human 3.6M dataset with MPII input keypoints.                        | 52.0 mm  | 0.06 | ```ppierzc/cgnf/cgnf_human36m:best```         | [link](https://wandb.ai/ppierzc/propose_human36m/artifacts/model/mpii-prod/v20/files)         |
-| cGNF Human 3.6m w/o sample loss | Model trained on the Human 3.6M dataset with MPII input keypoints without the sample loss | 58.7 mm  | 0.05 | ```ppierzc/cgnf/cgnf_human36m-no-mode:best``` | [link](https://wandb.ai/ppierzc/propose_human36m/artifacts/model/mpii-prod-no-mode/v20/files) |
+| Model Name                      | description                                                                               | minMPJPE | ECE  | Artifact path                                             | Weights                                                                                       |
+|---------------------------------|-------------------------------------------------------------------------------------------|----------|------|-----------------------------------------------------------|-----------------------------------------------------------------------------------------------|
+| Extra Large cGNF Human 3.6m     | Extra large model trained on the Human 3.6M dataset with MPII input keypoints.            | 48.5 mm  | 0.23 | ```ppierzc/propose_human36m/mpii-prod-xlarge:best```      | [link](https://wandb.ai/ppierzc/propose_human36m/artifacts/model/mpii-prod-xlarge/best/files)    |
+| Large cGNF Human 3.6m           | Large model trained on the Human 3.6M dataset with MPII input keypoints.                  | 49.6 mm  | 0.12 | ```ppierzc/propose_human36m/mpii-prod-large:best```   | [link](https://wandb.ai/ppierzc/propose_human36m/artifacts/model/mpii-prod-large/best/files)   |
+| cGNF Human 3.6m                 | Model trained on the Human 3.6M dataset with MPII input keypoints.                        | 53.0 mm  | 0.08 | ```ppierzc/propose_human36m/mpii-prod:best```         | [link](https://wandb.ai/ppierzc/propose_human36m/artifacts/model/mpii-prod/best/files)         |
+| cGNF Human 3.6m w/o sample loss | Model trained on the Human 3.6M dataset with MPII input keypoints without the sample loss | 57.5 mm  | 0.08 | ```ppierzc/propose_human36m/mpii-prod-no-mode:best``` | [link](https://wandb.ai/ppierzc/propose_human36m/artifacts/model/mpii-prod-no-mode/best/files) |
 
 
 ### Training
 You can rerun the training script with any of the model setups given in `/experiments/human36m` with the following command:
 ```
-docker-compose run train --human36m --experiment=mpii-prod-xlarge
+docker-compose run train --human36m --experiment=mpii-prod
 ```
 ### Evaluation
 #### Error Analysis between predictions and ground truth
 You can evaluate the model with the following command:
 ```
-docker-compose run eval --human36m --experiment=mpii-prod-xlarge
+docker-compose run eval --human36m --experiment=mpii-prod
 ```
 
 #### Calibration check of Model on the Human3.6M Dataset
 You can run the calibration check with the following command:
 ```
-docker-compose run eval --human36m --experiment=mpii-prod-xlarge --script=eval.human36m.calibration
+docker-compose run eval --human36m --experiment=mpii-prod --script=eval.human36m.calibration
 ```
 
 #### Evaluation of external models
@@ -126,3 +126,6 @@ If you use our work in your research, please cite our paper:
   url = {}
 }
 ```
+
+## Issues
+If you encounter any problems or have suggestions, please open an [issue](/issues).
