@@ -107,12 +107,14 @@ docker-compose run notebook_server
 which will start a jupyter notebook server at https://localhost:8888.
 
 ##### Table of contents for the notebooks
-- [Human3.6M](/notebooks/human36m) - Human3.6M related experiments (Fig. 1 a, c; Fig. 3., Supp. Fig. 6, Supp. Fig. 7)
-- [Toy Problems](/notebooks/toy_problem) - Toy problem related experiments (Fig. 1 b, d;)
-- [Supplementary](/notebooks/supplementary) - Supplementary material related experiments (Supp. Fig. 4, Supp. Fig. 5)
+- [Human3.6M](/notebooks/human36m) - Human3.6M related experiments (Fig. 1 a, c; Fig. 3.; Supp. Fig. 6; Supp. Fig. 7)
+- [Toy Problems](/notebooks/toy_problem) - Toy problem related experiments (Fig. 1 b, d)
+- [Supplementary](/notebooks/supplementary) - Supplementary material related experiments (Supp. Fig. 4; Supp. Fig. 5)
+
+A [demo notebook](/notebooks/demo.ipynb) is also available to show how to use our cGNF model.
 
 ## Try it yourself
-We provide a demo of the model where you can provide your own input image and evaluate the model on it.
+We provide an interactive demo of the model where you can provide your own input image and evaluate the model on it.
 You can run the demo with the following command:
 ```
 docker-compose run -p 7860:7860 demo
