@@ -128,4 +128,4 @@ If you use our work in your research, please cite our paper:
 ```
 
 ## Issues
-If you encounter any problems or have suggestions, please open an [issue](/issues).
+If you encounter any problems or have suggestions, please open an [issue](/../../issues).
