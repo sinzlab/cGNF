@@ -4,9 +4,13 @@ from tqdm import tqdm
 
 import models.model as model
 import config as c
-from utils.eval_functions import (compute_CP_list, pa_hypo_batch,
-                                  err_3dpe_parallel, compute_3DPCK)
-from utils.data_utils import (reinsert_root_joint_torch, root_center_poses)
+from utils.eval_functions import (
+    compute_CP_list,
+    pa_hypo_batch,
+    err_3dpe_parallel,
+    compute_3DPCK,
+)
+from utils.data_utils import reinsert_root_joint_torch, root_center_poses
 import data.data_h36m
 from sklearn.metrics import auc
 from tqdm import tqdm
@@ -35,7 +39,7 @@ inn.to(c.device)
 inn.load(c.load_model_name, c.device)
 inn.eval()
 
-print(f'{sum(p.numel() for p in inn.parameters()):,}')
+print(f"{sum(p.numel() for p in inn.parameters()):,}")
 
 c.batch_size = 512
 
@@ -48,9 +52,13 @@ cps_step = 1
 cps_length = int((cps_max_th + 1 - cps_min_th) / cps_step)
 
 quick_eval_stride = 16
-test_dataset = data.data_h36m.H36MDataset(c.test_file, quick_eval=False, train_set=False, hardsubset=True)
+test_dataset = data.data_h36m.H36MDataset(
+    c.test_file, quick_eval=False, train_set=False, hardsubset=True
+)
 
-loader = torch.utils.data.DataLoader(test_dataset, batch_size=1, shuffle=True, drop_last=False)
+loader = torch.utils.data.DataLoader(
+    test_dataset, batch_size=1, shuffle=True, drop_last=False
+)
 
 n_poses = len(test_dataset)
 
@@ -81,12 +89,12 @@ e = []
 for batch_idx, sample in tqdm(enumerate(loader)):
     # if batch_idx == 10:
     #     break
-    x = sample['poses_3d']
-    y_gt = sample['p2d_hrnet']
-    cond = sample['gauss_fits']
-    occl = sample['occlusions']
+    x = sample["poses_3d"]
+    y_gt = sample["p2d_hrnet"]
+    cond = sample["gauss_fits"]
+    occl = sample["occlusions"]
     bs = x.shape[0]
-    x_gt = sample['p3d_gt']
+    x_gt = sample["p3d_gt"]
 
     # sample multiple z
     z_all = std_dev * torch.randn(n_hypo, bs, c.ndim_z, device=c.device)
@@ -100,9 +108,13 @@ for batch_idx, sample in tqdm(enumerate(loader)):
 
     poses_3d_pred = reinsert_root_joint_torch(poses_3d_pred)
     poses_3d_pred = root_center_poses(poses_3d_pred) * 1000
-    poses_3d_pred = poses_3d_pred.view(n_hypo, 3, 17).swapaxes(1, 2)[:, np.insert(sample['occlusions'].numpy(), 9, False)][:, 1:]
+    poses_3d_pred = poses_3d_pred.view(n_hypo, 3, 17).swapaxes(1, 2)[
+        :, np.insert(sample["occlusions"].numpy(), 9, False)
+    ][:, 1:]
 
-    x_gt = x_gt.view(1, 3, 17).swapaxes(1, 2)[:, np.insert(sample['occlusions'].numpy(), 9, False)][:, 1:]
+    x_gt = x_gt.view(1, 3, 17).swapaxes(1, 2)[
+        :, np.insert(sample["occlusions"].numpy(), 9, False)
+    ][:, 1:]
     # print(poses_3d_pred.shape)
     #     # poses_3d_pred = poses_3d_pred[:, np.insert(sample['occlusions'].numpy(), 9, False)]
 
@@ -115,14 +127,16 @@ for batch_idx, sample in tqdm(enumerate(loader)):
     # print(q.mean(1))
 
     sample_median = torch.Tensor(poses_3d_pred).median(0).values
-    errors = ((sample_median - poses_3d_pred) ** 2).sum(-1) ** .5
-    true_error = ((sample_median - x_gt)**2).sum(-1)**.5
+    errors = ((sample_median - poses_3d_pred) ** 2).sum(-1) ** 0.5
+    true_error = ((sample_median - x_gt) ** 2).sum(-1) ** 0.5
 
     q_vals = np.quantile(errors.data.numpy(), quantiles, 0)
     # q_val.append(q_vals)
     #
     # v = (q_vals > true_error.data.numpy().squeeze()).astype(int)
-    v = np.nanmean((q_vals > true_error.data.numpy().squeeze()).astype(int), axis=1)[:, np.newaxis]
+    v = np.nanmean((q_vals > true_error.data.numpy().squeeze()).astype(int), axis=1)[
+        :, np.newaxis
+    ]
     if not np.isnan(v).any():
         total += 1
         quantile_counts += v
@@ -133,6 +147,6 @@ calibration_score = np.abs(np.median(quantile_freqs, axis=1) - quantiles).mean()
 wandb.log({"calibration_score": calibration_score})
 print("Calibration score: ", calibration_score)
 
-np.save('wehrbein_quantile_freqs_occl.npy', quantile_freqs)
-np.save('wehrbein_quantiles_occl.npy', quantiles)
-np.save('wehrbein_q_val_occl.npy', q_val)
+np.save("wehrbein_quantile_freqs_occl.npy", quantile_freqs)
+np.save("wehrbein_quantiles_occl.npy", quantiles)
+np.save("wehrbein_q_val_occl.npy", q_val)
