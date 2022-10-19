@@ -1,7 +1,7 @@
-import torch
-import torch.nn as nn
-import torch.distributions as D
 import numpy as np
+import torch
+import torch.distributions as D
+import torch.nn as nn
 
 
 # It's a Gaussian distribution with a fixed mean and a learnable standard deviation

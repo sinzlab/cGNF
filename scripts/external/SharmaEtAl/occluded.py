@@ -1,26 +1,24 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from __future__ import print_function, absolute_import, division
+from __future__ import absolute_import, division, print_function
 
 import os
 import sys
 from pprint import pprint
+
 import numpy as np
-
-import torch
-import torch.nn as nn
-import torch.optim
-import torch.backends.cudnn as cudnn
-from torch.utils.data import DataLoader
-from torch.autograd import Variable
-import torch.nn.functional as F
-
-from opt import Options
-import src.utils as utils
 import src.log as log
-
-from src.model import CVAE_Linear, weight_init
+import src.utils as utils
+import torch
+import torch.backends.cudnn as cudnn
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim
+from opt import Options
 from src.datasets.human36m import Human36M
+from src.model import CVAE_Linear, weight_init
+from torch.autograd import Variable
+from torch.utils.data import DataLoader
 
 
 def loss_function(y, y_gsnn, x, mu, logvar):

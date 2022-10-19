@@ -1,28 +1,25 @@
-from __future__ import print_function, absolute_import, division
+from __future__ import absolute_import, division, print_function
 
-import os
-import time
-import datetime
 import argparse
-import numpy as np
+import datetime
+import os
 import os.path as path
+import time
 
+import numpy as np
 import torch
-import torch.nn as nn
 import torch.backends.cudnn as cudnn
-from torch.utils.data import DataLoader
-
 import torch.distributions as D
-
-from progress.bar import Bar
-from common.log import Logger, savefig
-from common.utils import AverageMeter, lr_decay, save_ckpt
-from common.data_utils import fetch, read_3d_data, create_2d_data
+import torch.nn as nn
+from common.data_utils import create_2d_data, fetch, read_3d_data
 from common.generators import PoseGenerator
+from common.log import Logger, savefig
 from common.loss import mpjpe, p_mpjpe
-from models.linear_model import LinearModel, init_weights
-
+from common.utils import AverageMeter, lr_decay, save_ckpt
 from models.iso_gaussian_model import FlowModel, IsoGaussianModel
+from models.linear_model import LinearModel, init_weights
+from progress.bar import Bar
+from torch.utils.data import DataLoader
 
 
 def parse_args():
@@ -152,7 +149,7 @@ def main(args):
     print("==> Loading dataset...")
     dataset_path = path.join("data", "data_3d_" + args.dataset + ".npz")
     if args.dataset == "h36m":
-        from common.h36m_dataset import Human36mDataset, TRAIN_SUBJECTS, TEST_SUBJECTS
+        from common.h36m_dataset import TEST_SUBJECTS, TRAIN_SUBJECTS, Human36mDataset
 
         dataset = Human36mDataset(dataset_path)
         subjects_train = TRAIN_SUBJECTS

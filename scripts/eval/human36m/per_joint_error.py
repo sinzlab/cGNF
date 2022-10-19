@@ -1,23 +1,19 @@
-from propose.datasets.human36m.Human36mDataset import Human36mDataset
-from torch_geometric.loader import DataLoader
-from propose.poses.human36m import Human36mPose
-
-from propose.utils.reproducibility import set_random_seed
-from propose.evaluation.mpjpe import mpjpe
-
-from propose.models.flows import CondGraphFlow
-
 import os
-
 import time
-from tqdm import tqdm
+
+import matplotlib.pyplot as plt
 import numpy as np
-
-import wandb
-
 import pandas as pd
 import seaborn as sns
-import matplotlib.pyplot as plt
+import wandb
+from torch_geometric.loader import DataLoader
+from tqdm import tqdm
+
+from propose.datasets.human36m.Human36mDataset import Human36mDataset
+from propose.evaluation.mpjpe import mpjpe
+from propose.models.flows import CondGraphFlow
+from propose.poses.human36m import Human36mPose
+from propose.utils.reproducibility import set_random_seed
 
 
 def evaluate(flow, test_dataloader, temperature=1.0):

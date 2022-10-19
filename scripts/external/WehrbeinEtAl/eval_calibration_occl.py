@@ -1,21 +1,20 @@
-import torch
-import numpy as np
-from tqdm import tqdm
+import time
 
-import models.model as model
 import config as c
-from utils.eval_functions import (
-    compute_CP_list,
-    pa_hypo_batch,
-    err_3dpe_parallel,
-    compute_3DPCK,
-)
-from utils.data_utils import reinsert_root_joint_torch, root_center_poses
 import data.data_h36m
+import models.model as model
+import numpy as np
+import torch
+import wandb
 from sklearn.metrics import auc
 from tqdm import tqdm
-import wandb
-import time
+from utils.data_utils import reinsert_root_joint_torch, root_center_poses
+from utils.eval_functions import (
+    compute_3DPCK,
+    compute_CP_list,
+    err_3dpe_parallel,
+    pa_hypo_batch,
+)
 
 wandb.init(
     project="propose_human36m",
