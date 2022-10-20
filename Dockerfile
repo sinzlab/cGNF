@@ -14,6 +14,9 @@ ARG GITHUB_TOKEN
 RUN git config --global credential.helper store &&\
     echo https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com >> ~/.git-credentials
 
+# ADD .git to image to allow for commit hash retrieval
+ADD .git /.git
+
 WORKDIR /src
 
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A4B469963BF863CC
@@ -36,7 +39,7 @@ RUN python -m pip install --no-cache-dir nflows\
 
 RUN pip install --upgrade pillow tqdm
 
-RUN pip install git+https://github.com/sinzlab/propose.git
+RUN pip install git+https://github.com/ppierzc/propose.git
 RUN pip install git+https://github.com/sinzlab/neuralpredictors.git
 RUN pip install torch-scatter==2.0.9 -f https://data.pyg.org/whl/torch-1.9.0+cu111.html
 RUN pip install torch-sparse==0.6.12 -f https://data.pyg.org/whl/torch-1.9.0+cu111.html

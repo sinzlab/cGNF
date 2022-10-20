@@ -1,12 +1,15 @@
-from propose.utils.imports import dynamic_import
-
 import argparse
-
 import os
-import yaml
-
 from pathlib import Path
 
+import yaml
+
+from propose.utils.imports import dynamic_import
+from propose.utils.reproducibility import (
+    check_uncommitted_changes,
+    get_commit_hash,
+    get_package_version,
+)
 
 parser = argparse.ArgumentParser(description="Arguments for running the scripts")
 
@@ -38,6 +41,13 @@ parser.add_argument(
     help="Experiment script",
 )
 
+parser.add_argument(
+    "--seed",
+    default=0,
+    type=int,
+    help="Random seed",
+)
+
 if __name__ == "__main__":
     args = parser.parse_args()
 
@@ -64,9 +74,32 @@ if __name__ == "__main__":
         if "experiment_name" not in config:
             config["experiment_name"] = args.experiment
 
+    config["env"] = {
+        "cgnf_version": get_commit_hash(),
+        "uncommitted_changes": check_uncommitted_changes(),
+        "propose_version": get_package_version("propose"),
+    }
+
+    seed = args.seed
+
+    config["seed"] = args.seed
+
+    print("Running with seed", seed)
     if args.human36m:
         dynamic_import(args.script, "run")(use_wandb=args.wandb, config=config)
     else:
         print(
             "Not running any scripts as no arguments were passed. Run with --help for more information."
         )
+
+
+# 0.0808, 0.0291
+# 0.0807, 0.0280
+# 0.0807, 0.0284
+
+# 53.0131
+# 53.0144
+
+# 0.0825, 0.0661
+# 0.0823, 0.0657
+# 0.0821, 0.0654

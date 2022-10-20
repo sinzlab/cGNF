@@ -1,21 +1,17 @@
-from propose.datasets.human36m.Human36mDataset import Human36mDataset
-from torch_geometric.loader import DataLoader
-
-from propose.utils.reproducibility import set_random_seed
-from propose.evaluation.mpjpe import mpjpe, pa_mpjpe
-from propose.evaluation.pck import pck, human36m_joints_to_use
-
-from propose.models.flows import CondGraphFlow
-
 import os
-
 import time
-from tqdm import tqdm
+
 import numpy as np
-
-import wandb
-
 import torch
+import wandb
+from torch_geometric.loader import DataLoader
+from tqdm import tqdm
+
+from propose.datasets.human36m.Human36mDataset import Human36mDataset
+from propose.evaluation.mpjpe import mpjpe, pa_mpjpe
+from propose.evaluation.pck import human36m_joints_to_use, pck
+from propose.models.flows import CondGraphFlow
+from propose.utils.reproducibility import set_random_seed
 
 
 def evaluate(flow, test_dataloader, temperature=1.0):
@@ -147,7 +143,7 @@ def run(use_wandb: bool = False, config: dict = None):
         )
 
     flow = CondGraphFlow.from_pretrained(
-        f'ppierzc/propose_human36m/{config["experiment_name"]}:v20'
+        f'ppierzc/propose_human36m/{config["experiment_name"]}:best'
     )
 
     config["cuda_accelerated"] = flow.set_device()
@@ -177,12 +173,19 @@ def run(use_wandb: bool = False, config: dict = None):
     if use_wandb:
         wandb.log(hard_res)
 
-    # Occlusion Only
+    hard_dataset = Human36mDataset(
+        **config["dataset"],
+        hardsubset=True,
+        occlusion_fractions=[],
+    )
+
+    # # Occlusion Only
     mpjpes = []
-    for i in tqdm(range(len(hard_dataset))):
+    pbar = tqdm(range(len(hard_dataset)))
+    for i in pbar:
         batch = hard_dataset[i][0]
-        batch.cuda()
-        samples = flow.sample(200, batch.cuda())
+        batch.to(flow.device)  # .cuda()
+        samples = flow.sample(200, batch).to(flow.device)  # .cuda())
 
         true_pose = (
             batch["x"]
@@ -204,6 +207,8 @@ def run(use_wandb: bool = False, config: dict = None):
         m = m.tolist()
 
         mpjpes += [m]
+
+        pbar.set_description(f"MPJPE: {np.nanmean(np.concatenate(mpjpes)):.4f}")
 
     occl_res = np.nanmean(mpjpes)
     if use_wandb:

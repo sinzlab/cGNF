@@ -1,15 +1,12 @@
-from propose.datasets.human36m.Human36mDataset import Human36mDataset
-
+import torch
+import wandb
 from torch_geometric.loader import DataLoader
 
+from propose.datasets.human36m.Human36mDataset import Human36mDataset
 from propose.models.flows import CondGraphFlow
 from propose.models.nn.embedding import embeddings
 from propose.training import supervised_trainer
 from propose.utils.reproducibility import set_random_seed
-
-import torch
-
-import wandb
 
 
 def human36m(use_wandb: bool = False, config: dict = None):
@@ -24,8 +21,14 @@ def human36m(use_wandb: bool = False, config: dict = None):
 
     dataset = Human36mDataset(**config["dataset"])
 
+    val_dataset = Human36mDataset(**config, val=True)
+
     dataloader = DataLoader(
         dataset, batch_size=config["train"]["batch_size"], shuffle=True
+    )
+
+    val_dataloader = DataLoader(
+        val_dataset, batch_size=config["train"]["batch_size"], shuffle=True
     )
 
     embedding_net = None
@@ -66,12 +69,17 @@ def human36m(use_wandb: bool = False, config: dict = None):
         if lr_scheduler:
             lr_scheduler.load_state_dict(checkpoint["lr_scheduler"])
 
+    if "use_mode" not in config["train"]:
+        config["train"]["use_mode"] = True
+
     supervised_trainer(
         dataloader,
         flow,
+        val_dataloader=val_dataloader,
         optimizer=optimizer,
         lr_scheduler=lr_scheduler,
         epochs=config["train"]["epochs"],
         device=flow.device,
         use_wandb=use_wandb,
+        use_mode=config["train"]["use_mode"],
     )

@@ -1,15 +1,12 @@
-from propose.datasets.human36m.Human36mDataset import Human36mDataset
-
+import torch
+import wandb
 from torch_geometric.loader import DataLoader
 
+from propose.datasets.human36m.Human36mDataset import Human36mDataset
 from propose.models.flows import CondGraphFlow
 from propose.models.nn.embedding import embeddings
 from propose.training import supervised_trainer
 from propose.utils.reproducibility import set_random_seed
-
-import torch
-
-import wandb
 
 
 def build_config(config, sweep_config):

@@ -1,7 +1,7 @@
-from pathlib import Path
-from propose.datasets.human36m.preprocess import pickle_poses, pickle_cameras
-
 import argparse
+from pathlib import Path
+
+from propose.datasets.human36m.preprocess import pickle_cameras, pickle_poses
 
 parser = argparse.ArgumentParser(description="Arguments for running the scripts")
 

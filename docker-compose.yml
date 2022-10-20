@@ -62,6 +62,16 @@ services:
       - .env
     entrypoint: [ "python", "/scripts/sweep.py" ]
 
+  pendulum:
+    image: cgnf
+    volumes:
+      - ./notebooks:/notebooks
+      - ./data:/data
+      - ./sweeps:/sweeps
+    env_file:
+      - .env
+    entrypoint: [ "python", "/notebooks/toy_problem/test.py" ]
+
   demo:
     image: cgnf
     <<: *common
@@ -77,6 +87,8 @@ services:
     volumes:
       - ./scripts:/scripts
       - ./data:/data
+    env_file:
+      - .env
     entrypoint: [ "python", "/scripts/preprocess.py" ]
 
   notebook_server:

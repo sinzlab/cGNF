@@ -1,19 +1,19 @@
-from pathlib import Path
-from propose.datasets.human36m.preprocess import pickle_poses, pickle_cameras
-
 import argparse
-
-from sweep.human36m import human36m
-
 import os
+from functools import partial
+from pathlib import Path
+
+import torch
+import wandb
 import yaml
 
-from pathlib import Path
-
-import wandb
-import torch
-
-from functools import partial
+from propose.datasets.human36m.preprocess import pickle_cameras, pickle_poses
+from propose.utils.reproducibility import (
+    check_uncommitted_changes,
+    get_commit_hash,
+    get_package_version,
+)
+from sweep.human36m import human36m
 
 parser = argparse.ArgumentParser(description="Arguments for running the scripts")
 
@@ -90,6 +90,12 @@ if __name__ == "__main__":
                 project="propose_human36m",
                 entity=os.environ["WANDB_USER"],
             )
+
+        config["env"] = {
+            "cgnf_version": get_commit_hash(),
+            "uncommitted_changes": check_uncommitted_changes(),
+            "propose_version": get_package_version("propose"),
+        }
 
         run_func = partial(human36m, use_wandb=args.wandb, config=config)
 
