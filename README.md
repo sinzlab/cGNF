@@ -8,8 +8,8 @@ This is the official implementation of the paper "Multi-hypothesis 3D human pose
 
 ### Model Source Code
 This repository hosts the experimental source code for the "Multi-hypothesis 3D human pose estimation metrics favor miscalibrated distributions" paper.
-However, the Conditional Graph Normalizing Flow (cGNF) model is implemented as part of the [PROPOSE](https://github.com/sinzlab/propose/tree/0.1.0) framework for PRObabilistic POSe Estimation.
-You can find the full implementation of the model [here](https://github.com/sinzlab/propose/tree/0.1.0/propose/models/flows).
+However, the Conditional Graph Normalizing Flow (cGNF) model is implemented as part of the [PROPOSE](https://github.com/sinzlab/propose/tree/0.2.0) framework for PRObabilistic POSe Estimation.
+You can find the full implementation of the model [here](https://github.com/sinzlab/propose/tree/0.2.0/propose/models/flows).
 
 ## Getting Started
 ### Prerequisites
