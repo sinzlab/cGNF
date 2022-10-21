@@ -3,7 +3,7 @@ This is the official implementation of the paper "Multi-hypothesis 3D human pose
 
 <p align="center"><img src="figure/pipeline.png" width="100%" alt="Pipeline for Human Pose Estimation with Conditional Graph Normalizing Flows (cGNFs)" /></p>
 
-> [**Multi-hypothesis 3D human pose estimation metrics favor miscalibrated distributions**](),\
+> [**Multi-hypothesis 3D human pose estimation metrics favor miscalibrated distributions**](https://arxiv.org/abs/2210.11179), \
 > Pierzchlewicz, P. A., Cotton, R. J., Bashiri, M. & Sinz, F. H.
 
 ### Model Source Code
@@ -127,10 +127,11 @@ If you use our work in your research, please cite our paper:
 @article{
   pierzchlewicz2022,
   title = {Multi-hypothesis 3D human pose estimation metrics favor miscalibrated distributions},
-  author = {Pierzchlewicz, Paweł A., Cotton, James, Bashiri, Mohammad, Sinz, Fabian},
+  author = {Pierzchlewicz, Pawe{\l} A., Cotton, R. James, Bashiri, Mohammad, Sinz, Fabian H.},
   journal = {arXiv},
   year = {2022},
-  url = {}
+  month = {oct},
+  url = {https://arxiv.org/abs/2210.11179}
 }
 ```
 
