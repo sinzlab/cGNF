@@ -1,6 +1,11 @@
 # Multi-hypothesis 3D human pose estimation metrics favor miscalibrated distributions
 This is the official implementation of the paper "Multi-hypothesis 3D human pose estimation metrics favor miscalibrated distributions".
 
+<p align="center"><img src="figure/tiny_paper.png" width="100%" alt="Pipeline for Human Pose Estimation with Conditional Graph Normalizing Flows (cGNFs)" /></p>
+
+> [**Optimizing MPJPE promotes miscalibration in multi-hypothesis human pose lifting**](https://openreview.net/forum?id=B5riBS9HZGn), \
+> Pierzchlewicz, P. A., Bashiri, M., Cotton, R. J. & Sinz, F. H.
+
 <p align="center"><img src="figure/pipeline.png" width="100%" alt="Pipeline for Human Pose Estimation with Conditional Graph Normalizing Flows (cGNFs)" /></p>
 
 > [**Multi-hypothesis 3D human pose estimation metrics favor miscalibrated distributions**](https://arxiv.org/abs/2210.11179), \
@@ -48,7 +53,7 @@ You can download it from the official [website](http://vision.imar.ro/human3.6m)
 
 Download the *D3 Positions mono* by subject and place them into the `data/human36m/raw` directory.
 Then run the following command to preprocess the data accordingly.
-```
+```shell
 docker-compose run preprocess --human36m
 ```
 
@@ -73,19 +78,19 @@ Table of available models:
 
 ### Training
 You can rerun the training script with any of the model setups given in `/experiments/human36m` with the following command:
-```
+```shell
 docker-compose run train --human36m --experiment=mpii-prod
 ```
 ### Evaluation
 #### Error Analysis between predictions and ground truth
 You can evaluate the model with the following command:
-```
+```shell
 docker-compose run eval --human36m --experiment=mpii-prod
 ```
 
 #### Calibration check of Model on the Human3.6M Dataset
 You can run the calibration check with the following command:
-```
+```shell
 docker-compose run eval --human36m --experiment=mpii-prod --script=eval.human36m.calibration
 ```
 
@@ -95,6 +100,7 @@ The list to with links to our scripts sorted by external models is given below:
 - [SimpleBaseline](/scripts/external/SimpleBaseline)
 - [Wehrbein et al.](/scripts/external/WehrbeinEtAl)
 - [Sharma et al.](/scripts/external/SharmaEtAl)
+- [Kolotouros et al.](/scripts/external/KolotourosEtAl)
 
 Follow the associated README files for more information.
 
@@ -116,14 +122,14 @@ A [demo notebook](/notebooks/demo.ipynb) is also available to show how to use ou
 ## Try it yourself
 We provide an interactive demo of the model where you can provide your own input image and evaluate the model on it.
 You can run the demo with the following command:
-```
+```shell
 docker-compose run -p 7860:7860 demo
 ```
 Then you can open the demo in your browser at http://localhost:7860.
 
 ## Citing our work
 If you use our work in your research, please cite our paper:
-```
+```bibtex
 @article{
   pierzchlewicz2022,
   title = {Multi-hypothesis 3D human pose estimation metrics favor miscalibrated distributions},
